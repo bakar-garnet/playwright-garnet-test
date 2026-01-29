@@ -1,0 +1,29 @@
+name: Garnet Runtime Test (playwright)
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add Garnet Monitor
+        uses: garnet-org/action@v1
+        with:
+          api_token: ${{ secrets.GARNET_API_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Loud workload (guaranteed signal)
+        run: |
+          set -x
+          npm init -y
+          npm i -D playwright
+          npx playwright install
+          bash -lc "echo shell_spawned"
+          curl -I https://example.com
